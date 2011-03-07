@@ -1,4 +1,11 @@
 An ubuntu indicator
-keep your computer insafe while you leave for a short time.
+keep your computer in safey while you leave for a short time ---- prevent the thief to steal you computer
 
+Function:
+1.The app listen to the ac-adapter and the computer lid if they were pulled out or closed up
+2.If the ac-adapter catch the signal above,the computer will play an alarm music or use your own music 
 
+Optional Function:
+1.send you a message to alarm your computer is in danger (the script sendmessage.sh just used for china location)
+2.capture the thief's face and upload to anywhere you want (default to Dropbox)
+*You can write any optional function to alarm
