@@ -13,11 +13,6 @@
 #cli-feition
 
 
-#choice
-#1.Play sound
-#   1)use cli--->play
-#   2)use extension module ---> pygame
-
 import gobject
 import dbus
 import dbus.service
@@ -35,6 +30,11 @@ import time
 from multiprocessing import Process
 from subprocess import call
 
+import gettext 
+PACKAGE = 'indicator-antithief'
+gettext.bindtextdomain(PACKAGE,'/usr/share/locale')
+gettext.textdomain(PACKAGE)
+_ = gettext.gettext
 
 
 #optionalarm template
@@ -81,7 +81,7 @@ class Antithief:
     def readconfig(self):
         import ConfigParser
         config = ConfigParser.ConfigParser()
-        config.read('/usr/share/antithief/Antithief.cfg')
+        config.read('/etc/antithief.conf')
         self.wavpath = config.get('setting','sound')
         self.opon = config.getint('setting','opon')
         self.oppath = config.get('setting','oppath')
@@ -188,8 +188,12 @@ class Antithief:
         noobj = nobus.get_object('org.freedesktop.Notifications','/org/freedesktop/Notifications')
         notify = dbus.Interface(noobj,'org.freedesktop.Notifications')
         #ntc
-        notify.Notify('Anti-thief',1,'',"注意",
-            '\t1.为得到清晰图片保证摄像头在明亮处-Keep webcam under the light to get a clear photo\n\t2.拔出耳机-Pull out the earphone\n\t3.电脑在5秒内锁屏-Screen will be lock in 5s','','',20000)
+        notify.Notify('Anti-thief',1,'',_("Attention"),
+                      #'\t1.为得到清晰图片保证摄像头在明亮处-Keep webcam under the light to get a clear photo\n\t2.拔出耳机-Pull out the earphone\n\t3.电脑在5秒内锁屏-Screen will be lock in 5s'
+                      _("1.Keep webcam under the light to get a clear photo")+"\n"+
+                      _("2.Pull out the earphone")+"\n"+
+                      _("3.Screen will be lock in 5s")
+                      ,'','',20000)
         time.sleep(5)
         lockbus = dbus.SessionBus()
         locksc = lockbus.get_object('org.gnome.ScreenSaver','/')
@@ -201,8 +205,8 @@ class Antithief:
     
     #restore the state before the alarm startup
     def restore(self):
-        self.setstatus(0)
-        self.loudest(0)
+        thread.start_new_thread(self.setstatus,(0,))
+        thread.start_new_thread(self.loudest,(0,))
 
     #Write more ways of alarm activities
     #use thread
